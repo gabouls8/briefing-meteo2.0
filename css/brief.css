@@ -1,0 +1,66 @@
+.reveal section img.noborder {
+	border: 0;
+}
+
+#sondage12H_options {
+    list-style-type: none;
+}
+
+#sondage15H_options {
+    list-style-type: none;
+}
+
+.big_input_qnh {
+    width:120px;
+    height:40px;
+    font-size:25px;
+}
+
+.big_input_delta {
+    width:40px;
+    height:40px;
+    font-size:25px;
+}
+
+.big_input_fl {
+    width:100px;
+    height:40px;
+    font-size:25px;
+}
+
+.div_qnh {
+    max-width:90%; 
+    max-height:100%; 
+    height:650px; 
+    background:white;
+}
+
+.alti {
+    width:100%;
+    border-spacing: 0px;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+.alti tbody {
+   border:2px solid black;
+}
+
+
+.alti tr:nth-child(even){background-color: #f2f2f2}
+.alti th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px;
+}
+.alti td {
+    padding: 5px;
+}
+.alti .centre {
+    text-align: center;
+}
+
+
+.risques {
+    font-size:25px;
+    font-weight: bold;
+}
