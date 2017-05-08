@@ -80,6 +80,11 @@
                         while (currentTime + miliseconds >= new Date().getTime()) {
                        }
                     }
+
+                    function reloadImg(imgid,imgsrc){
+                        img = document.getElementById(imgid);
+                        img.src = imgsrc;
+                    }
 			    </script>    
 
     <!-- Premier slide -->
@@ -202,23 +207,6 @@
                     sectionNotamFIR(listeFIR);
                 </script>
             
-            <!-- la liste des SUP AIP du jour, malheureusement pas triée -->
-                <section  class='enLigne'>
-                    <h4>Sup AIP</h4>
-                    <form id="formSupAip" action="https://www.sia.aviation-civile.gouv.fr/asp_ssl/supaipmetro.asp?idl=fr&rechtext=0" target="iframeSupAip" method="post">
-                        <input type="hidden" name="paramliste" value="1">
-                        <input type="hidden" name="choixliste" value="1">
-                        <script>
-                            document.write('<input type="hidden" name="datecritere" value="'+day+'.'+month+'.'+year+'">');
-                            document.write('<input type="hidden" name="datecriterehidden" value="'+day+'.'+month+'.'+year+'">');
-                        </script>
-                    </form>
-                    <iframe name="iframeSupAip" src="https://www.sia.aviation-civile.gouv.fr/asp_ssl/supaipmetro.asp?idl=fr&rechtext=0" width="1024" height="650px"></iframe>
-                    <script>
-                        document.getElementById("formSupAip").submit();
-                    </script>
-                </section>
-			
 			    <!-- Premier slide -->
 			    <section>
                     <h1>Briefing Météo</h1>
@@ -238,8 +226,14 @@
 		
                 <!-- un slide -->
                 <section>
-                    <h4>Géopotentielle à 500mb</h4>
-                    <img src="https://static.meteoblue.com/pub/nems12/maps/00VHG50_012.jpg" style="height:620px;">
+                    <section>
+                        <h4>Géopotentielle à 500mb</h4>
+                        <img src="https://static.meteoblue.com/pub/nems12/maps/00VHG50_012.jpg" style="height:620px;">
+                    </section>
+                    <section>
+                        <h4>Géopotentielle à 500mb</h4>
+                        <img src="https://static.meteoblue.com/pub/nems12/maps/00VHG50_024.jpg" style="height:620px;">
+                    </section>
                 </section>
 
 			    <!-- un slide -->
@@ -253,15 +247,54 @@
 			
 
 			
-			    <!-- un slide -->
-			    <!-- les photos satellites sont chargées une à une et réassemblées en image animée avec la librairie gallery.css pour reveal.js -->
-			    <section data-autoslide="11000">
+                <!-- un slide -->
+                <!-- les photos satellites sont chargées une à une et réassemblées en image animée avec la librairie gallery.css pour reveal.js -->
+                <section>
+                <section data-autoslide="11000">
                     <h4>Satellite visible France</h4>
-                    <ul class="gallery" data-interval="0.5" data-iterations="2">
-                        <script class='enLigne'>
+                    <ul class="gallery" data-interval="0.5" data-iterations="0">
+                        <script>
                             var minutesat = minutes;
-                            var hoursat = hours;
+                            var hoursat = hours -1;
             
+            
+                            if(minutesat>=0){minutesat = '00';}
+                            if(minutesat>=15){minutesat = '15';}
+                            if(minutesat>=30){minutesat = '30';}
+                            if(minutesat>=45){minutesat = '45';}
+            
+                            var previousSat = function(){
+                                if(minutesat=='00'){minutesat = '45'; hoursat--; if(hoursat.toString().length==1){var zero = '0'; hoursat = zero.concat(hoursat);}}
+                                else{ 
+                                    if(minutesat=='15'){minutesat = '00';}
+                                    else{
+                                        if(minutesat=='30'){minutesat = '15';}
+                                        else{
+                                            if(minutesat=='45'){minutesat = '30';}
+                                        }
+                                    }
+                                }
+                            }
+
+            
+                            var arrayImages = [];
+                            for(i=0; i<7; i++){
+                                arrayImages.push('<li><img src="http://fr.sat24.com/image?type=visual&region=fr&timestamp='+ymd+hoursat+minutesat+ '"></li>');
+                                previousSat();
+                            }
+                            for(j=arrayImages.length-1; j>0; j--){
+                                document.write(arrayImages[j]);
+                                if(j==1){document.write(arrayImages[j]); document.write(arrayImages[j]);}
+                            }
+                        </script>
+                    </ul>
+                </section>
+                <section data-autoslide="11000">
+                    <h4>Satellite infrarouge Europe</h4>
+                    <ul class="gallery" data-interval="0.5" data-iterations="0">
+                        <script>
+                            var minutesat = minutes;
+                            var hoursat = hours-1;
             
                             if(minutesat>=0){minutesat = '00';}
                             if(minutesat>=15){minutesat = '15';}
@@ -282,19 +315,19 @@
                             }
             
                             var arrayImages = [];
-                            for(i=0; i<5; i++){
-                                arrayImages.push('<li><img src="http://fr.sat24.com/image?type=visual&region=fr&timestamp='+ymd+hoursat+minutesat+ '"></li>');
+                            for(i=0; i<10; i++){
+                                arrayImages.push('<li><img src="http://fr.sat24.com/image?type=infraPolair&region=eu&timestamp='+ymd+hoursat+minutesat+ '"></li>');
                                 previousSat();
                             }
                             for(j=arrayImages.length-1; j>0; j--){
                                 document.write(arrayImages[j]);
                                 if(j==1){document.write(arrayImages[j]); document.write(arrayImages[j]);}
+            
                             }
                         </script>
                     </ul>
-			    </section>
-			
-
+                </section>			
+                </section>
 			
 			    <!-- un slide -->
 			    <section>
@@ -311,19 +344,29 @@
 			
 			<!-- meteo france -->
             <!-- les cartes de vent sont chargées en deux slides superposés, celle du dessus à 12H, celle du dessous à 15h -->
+            <script>
+                var imsurf12 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'120000&mode=img&comment=';
+                var imsurf15 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'150000&mode=img&comment=';
+                var im150012 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'120000&mode=img&comment=';
+                var im150015 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'150000&mode=img&comment=';
+                var im300012 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'120000&mode=img&comment=';
+                var im300015 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'150000&mode=img&comment=';
+                var im550012 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'120000&mode=img&comment=';
+                var im550015 = 'https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'150000&mode=img&comment=';
+            </script>
                 <section>    
                 <section>
-                    <h4>12H UTC Surface</h4>
+                    <h4 onclick="reloadImg('i1',imsurf12)">12H UTC Surface</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i1" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
             
                 <section>
-                    <h4>15H UTC Surface</h4>
+                    <h4 onclick="reloadImg('i2',imsurf15)">15H UTC Surface</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i2" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-10m&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
@@ -331,17 +374,17 @@
             <!-- les cartes de vent sont chargées en deux slides superposés, celle du dessus à 12H, celle du dessous à 15h -->
                 <section>
                 <section>
-                    <h4>12H UTC 1500m</h4>
+                    <h4 onclick="reloadImg('i3',im150012)">12H UTC 1500m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i3" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
             
                 <section>
-                    <h4>15H UTC 1500m</h4>
+                    <h4 onclick="reloadImg('i4',im150015)">15H UTC 1500m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i4" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl050&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
@@ -349,17 +392,17 @@
             <!-- les cartes de vent sont chargées en deux slides superposés, celle du dessus à 12H, celle du dessous à 15h -->
                 <section>
                 <section>
-                    <h4>12H UTC 3000m</h4>
+                    <h4 onclick="reloadImg('i5',im300012)">12H UTC 3000m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i5" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
             
                 <section>
-                    <h4>15H UTC 3000m</h4>
+                    <h4 onclick="reloadImg('i6',im300015)">15H UTC 3000m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i6" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl100&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>    
                 </section>
@@ -367,17 +410,17 @@
             <!-- les cartes de vent sont chargées en deux slides superposés, celle du dessus à 12H, celle du dessous à 15h -->
                 <section>
                 <section>
-                    <h4>12H UTC 5500m</h4>
+                    <h4 onclick="reloadImg('i7',im550012)">12H UTC 5500m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i7" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'120000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>
                 </section>
             
                 <section>
-                    <h4>15H UTC 5500m</h4>
+                    <h4 onclick="reloadImg('i8',im550015)">15H UTC 5500m</h4>
                     <script class='enLigne'>
-                        document.write('<img src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:620px">');
+                        document.write('<img id="i8" src="https://aviation.meteo.fr/affiche_image.php?time=1455464332&type=regional/france-se/wind-fl180&date='+ymd+'150000&mode=img&comment=" alt="connect to https://aviation.meteo.fr/login.php and relaunch" style="max-height:800px">');
                     </script>
                     <p><a href="https://aviation.meteo.fr/login.php" onclick="window.open(this.href); return false;" onkeypress="window.open(this.href); return false;">Aéroweb</a></p>    
                 </section>
@@ -393,12 +436,12 @@
             <!-- sondage météociel -->
             	<section>
                     <h4>Sondage modélisé Météociel / Saint Auban</h4>
-                    <iframe src="http://www.meteociel.fr/modeles/sondage2.php?archive=0&ech=6&map=1&wrf=0&region=&type=1&lat=44.0825&lon=5.99417" width="1024" height="768"></iframe>
+                    <iframe src="http://www.meteociel.fr/modeles/sondage2.php?archive=0&ech=12&map=1&wrf=0&region=&type=1&lat=44.0825&lon=5.99417" width="1024" height="768"></iframe>
 			    </section>
 			
 			    <section>
                     <h4>Sondage modélisé Météociel / Briançon</h4>
-                    <iframe src="http://www.meteociel.fr/modeles/sondage2.php?archive=0&ech=6&map=1&wrf=0&region=&type=1&lat=44.8964&lon=6.64941" width="1024" height="768"></iframe>
+                    <iframe src="http://www.meteociel.fr/modeles/sondage2.php?archive=0&ech=12&map=1&wrf=0&region=&type=1&lat=44.8964&lon=6.64941" width="1024" height="768"></iframe>
 			    </section>
 			
 			
@@ -533,16 +576,32 @@
                     </div>
 			        
 			    </section>
-			    
+
 			    <section data-autoslide="1">
 			        <iframe src="http://www.meteociel.fr/previsions/33652/chateau_arnoux_saint_auban.htm" width="1024" height="768"></iframe>
 			    </section>
 			
-			    <section data-autoslide="1">
-                    <h4>Bulletins vol à voile</h4>
-                    <iframe src="https://aviation.meteo.fr/accueil.php#debut_page" width="1024" height="768"></iframe>
+
 			    </section>
-			    </section>
+
+                <section>
+
+                <section>
+                    <img src="./Diapositive1.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive2.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive3.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive4.jpg" style="height:620px;">
+                </section>
+                </section>
 			
 			
 			<!-- un slide 

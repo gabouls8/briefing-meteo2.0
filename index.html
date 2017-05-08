@@ -3,19 +3,28 @@
 
 	<head>
 		<meta charset="utf-8">
+
 		<title>Briefing météo</title>
+
 		<meta name="description" content="Une collecte automatique de données météo pour les alpes du sud">
 		<meta name="author" content="Marcos Ossedat, Baptiste DESPREZ, BFE, Billy, CPT, marc Terrier ...">
+
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
 		<link rel="stylesheet" href="css/reveal.css">
 		<link rel="stylesheet" href="css/theme/sky.css" id="theme">
         <link rel="stylesheet" href="./plugin/gallery/gallery.css">
         <link rel="stylesheet" href="./css/brief.css">
         <script src="./js/jquery.min.js"></script>
+
+
+
 		<!-- Code syntax highlighting -->
 		<link rel="stylesheet" href="lib/css/zenburn.css">
+
 		<!-- Printing and PDF exports -->
 		<script>
 			var link = document.createElement( 'link' );
@@ -67,7 +76,7 @@
                     var day = date.getUTCDate();
                     var month = date.getUTCMonth()+1;
                     var year = date.getUTCFullYear();
-                    // faisons en sorte que le premier janvier à 8 heures 2 minutes soit 01/01/2016 08:02, et non 1/1/2016 8:2
+                    // faisons en sorte que le premier janvier à 8 heures 2 minutes soit 01/01/2016 08:02, et non 1/1/2016 8:2  ;-)
                     if(hours.toString().length==1){var zero = '0'; hours = zero.concat(hours);}
                     if(minutes.toString().length==1){var zero = '0'; minutes = zero.concat(minutes);}
                     if(seconds.toString().length==1){var zero = '0'; seconds = zero.concat(seconds);}
@@ -89,8 +98,8 @@
                     <p><small>Alpes du sud <script>document.write(day+'/'+month+'/'+year);</script></small></p>
                     <!-- une astuce qui permet de se connecter automatiquement au site de météo france pour accéder aux cartes des vent (utilisez votre login et mot de passe tel que décrit dans https://github.com/gabouls8/briefing-meteo/blob/master/README.md) -->
                     <form id='formloginaeroweb' action="https://aviation.meteo.fr/ajax/login_valid.php" target="aeroweb-iframe" method="post">
-                        <input type="hidden" name='login' value='mvav'>
-                        <input type="hidden" name='password' value='7ee6fd716429dccfc963bc6a2fd9feb0'>
+                        <input type="hidden" name='login' value='votre_login'>
+                        <input type="hidden" name='password' value='votre_password_crypté'>
                     </form>
                     <iframe type="hidden" name='aeroweb-iframe' src="https://aviation.meteo.fr/ajax/login_valid.php" width="0" height="0"></iframe>
                     <script type="text/javascript">
@@ -460,7 +469,7 @@
                     </div>
 			        
 			    </section>
-			    
+			 
 			    <section data-autoslide="1">
 			        <iframe src="http://www.meteociel.fr/previsions/33652/chateau_arnoux_saint_auban.htm" width="1024" height="768"></iframe>
 			    </section>
@@ -470,6 +479,25 @@
                     <iframe src="https://aviation.meteo.fr/accueil.php#debut_page" width="1024" height="768"></iframe>
 			    </section>
 			    </section>
+
+                <section>
+
+                <section>
+                    <img src="./Diapositive1.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive2.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive3.jpg" style="height:620px;">
+                </section>
+
+                <section>
+                    <img src="./Diapositive4.jpg" style="height:620px;">
+                </section>
+                </section>
 			
 			
 			<!-- un slide 
